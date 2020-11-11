@@ -9,14 +9,14 @@ module.exports = (env, options) => {
   console.log('options: ')
   console.log(options)
 
-  return ({
-    entry: { 
+  return {
+    entry: {
       bundle: './theme/src/index.js',
-      fonts: './theme/src/fonts.js'
+      fonts: './theme/src/fonts.js',
     },
     output: {
       path: path.resolve(__dirname, 'server/wp-content/themes', 'beamitup/dist'),
-      filename: '[name].js'
+      filename: '[name].js',
     },
     module: {
       rules: [
@@ -24,8 +24,8 @@ module.exports = (env, options) => {
           test: /\.js$/,
           exclude: /node_modules/,
           use: {
-            loader: 'babel-loader'
-          }
+            loader: 'babel-loader',
+          },
         },
         {
           test: /\.css$/,
@@ -40,37 +40,44 @@ module.exports = (env, options) => {
                 config: {
                   ctx: {
                     purgecss: options.mode === 'production' ? { content: ['./**/*.twig'] } : false,
-                    cssnano: options.mode === 'production' ? {} : false
-                  }
-                }
-              }
-            }
-          ]
+                    cssnano: options.mode === 'production' ? {} : false,
+                  },
+                },
+              },
+            },
+          ],
         },
         {
           test: /\.(ttf|eot|woff|woff2)$/,
           use: {
-            loader: "file-loader",
+            loader: 'file-loader',
             options: {
-              name: "fonts/[name].[ext]",
+              name: 'fonts/[name].[ext]',
             },
           },
         },
-      ]
+      ],
     },
     plugins: [
       new MiniCssExtractPlugin({
         filename: '[name].css',
-        chunkFilename: '[id].css'
+        chunkFilename: '[id].css',
       }),
       new CleanWebpackPlugin(path.resolve(__dirname, 'server/wp-content/themes', 'beamitup')),
-      new CopyWebpackPlugin([{
-        from: 'theme/include',
-        to: path.resolve(__dirname, 'server/wp-content/themes', 'beamitup')
-      }, {
-        from: 'theme/templates',
-        to: path.resolve(__dirname, 'server/wp-content/themes', 'beamitup/templates')
-      }]),
-    ]
-  })
+      new CopyWebpackPlugin([
+        {
+          from: 'theme/include',
+          to: path.resolve(__dirname, 'server/wp-content/themes', 'beamitup'),
+        },
+        {
+          from: 'plugins',
+          to: path.resolve(__dirname, 'server/wp-content/plugins'),
+        },
+        {
+          from: 'theme/templates',
+          to: path.resolve(__dirname, 'server/wp-content/themes', 'beamitup/templates'),
+        },
+      ]),
+    ],
+  }
 }
